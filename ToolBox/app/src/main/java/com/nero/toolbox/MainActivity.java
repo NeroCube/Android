@@ -1,5 +1,11 @@
 package com.nero.toolbox;
 
+import android.app.ActivityManager;
+import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -19,7 +25,6 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
     public static String TAG=MainActivity.class.getSimpleName();
     public static boolean D=true;
-
     private static String msg="";
     private Button run;
     private TextView ans;
@@ -33,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         run.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                How2makeHttpRequest();
+                How2SendBroadcast();
             }
         });
     }
@@ -87,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
             msg=HttpUtility.SQLExcute(Config.host,Config.path,Config.database,sql).toString();
             if(D) Log.i(TAG, "Response:" + msg);
 //            String var="db="+Config.database+",sql="+sql+",mode=4";
-//            String RequestUrl="http://123.59.68.12/guaTest/GATE.php";
+//            String RequestUrl="http://host/FilePath.php";
 //            msg= HttpUtility.makeHttpRequest(var, RequestUrl, HttpUtility.Request.POST, HttpUtility.Response.JSON);
             return "Execute";
         }
@@ -96,4 +101,36 @@ public class MainActivity extends AppCompatActivity {
         public void onPreExecute() {}
         protected void onProgressUpdate(Integer... progress) {}
     }
+    /**
+     * 執行Service輪巡
+     */
+    public void How2ServicePolling(){
+        if(!isServiceRunning("MyService")){
+            Intent intent = new Intent(MainActivity.this, MyService.class);
+            MainActivity.this.startService(intent);
+            Log.i(TAG, "is MyService running :" + isServiceRunning("MyService"));
+        }
+    }
+    /**
+     * 檢查Service是否執行
+     * @param ServiceName
+     * @return
+     */
+    public boolean isServiceRunning(String ServiceName){
+        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            String allServiceName = service.service.getClassName();
+            if (allServiceName.equals(ServiceName)){ return true;}
+        }
+        return false;
+    }
+    /**
+     *如何接收傳送廣播
+     */
+    public void How2SendBroadcast(){
+        BroadcastUtility b=new BroadcastUtility(this);
+        registerReceiver(b.mReceiver, b.mIntentFilter());
+        b.sendMessage("123133213");
+    }
+
 }
