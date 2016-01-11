@@ -10,3 +10,7 @@
 功能實作
 -- 
 * [如何發送HTTP請求](https://github.com/NeroCube/Android/wiki/%E5%A6%82%E4%BD%95%E7%99%BC%E9%80%81HTTP%E8%AB%8B%E6%B1%82)
+* [如何剖析JSON字串]()
+* [如何透過PHP對MySQL執行SQL指令]()
+* [如何檢查裝置上的網路狀態]()
+* [如何進行AES加解密]()
