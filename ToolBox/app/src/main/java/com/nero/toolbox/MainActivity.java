@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     public static boolean D=true;
     private static String msg="";
     private Button run;
-    private TextView ans;
+    private static TextView ans;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,9 +128,25 @@ public class MainActivity extends AppCompatActivity {
      *如何接收傳送廣播
      */
     public void How2SendBroadcast(){
-        BroadcastUtility b=new BroadcastUtility(this);
-        registerReceiver(b.mReceiver, b.mIntentFilter());
-        b.sendMessage("123133213");
+        registerReceiver(mReceiver, BroadcastUtility.mIntentFilter());
+        BroadcastUtility b=new BroadcastUtility(getApplication());
+        b.sendMessage("123");
+
     }
+    /**
+     *
+     */
+    public static BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+            if (BroadcastUtility.ACTION_DATA_AVAILABLE.equals(action)) {
+                String sender = intent.getStringExtra(BroadcastUtility.EXTRA_DATA);
+                Log.i(TAG,"get:"+sender);
+                ans.setText("get:"+sender);
+
+            }
+        }
+    };
 
 }
